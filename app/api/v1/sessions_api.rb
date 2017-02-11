@@ -27,11 +27,8 @@ class V1::SessionsApi < Grape::API
     end
 
     desc 'Destroy the auth token'
-    params do
-      requires :auth_token, type: String, desc: 'User Access Token'
-    end
     delete '/' do
-      auth_token = params[:auth_token]
+      auth_token = headers['Authorization']
       user = User.find_by(authentication_token: auth_token)
 
       if user.nil?

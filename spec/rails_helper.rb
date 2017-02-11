@@ -58,4 +58,8 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  config.include Request::HeadersHelpers
+  config.include Request::JsonHelpers
+  config.include RSpec::Rails::RequestExampleGroup, type: :request, file_path: /spec\/api/
 end
