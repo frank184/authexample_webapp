@@ -12,6 +12,10 @@ module AuthexampleWebapp
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
+    config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
+
+
     # Rails Generation Configs
     config.generators do |g|
       g.test_framework :rspec, fixture: true
