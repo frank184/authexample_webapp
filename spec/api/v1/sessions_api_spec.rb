@@ -12,7 +12,9 @@ RSpec.describe V1::SessionsApi do
           params: { email: user.email, password: user.password },
           headers: default_headers
       end
-      it { expect(json_response).to include(:auth_token) }
+      it 'should include an auth token in the Authorization header' do
+        expect(response.headers['Authorization']).to be_present
+      end
     end
 
     context 'invalid' do

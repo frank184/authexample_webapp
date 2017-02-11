@@ -3,7 +3,7 @@ class V1::SessionsApi < Grape::API
 
   namespace :sessions do
 
-    desc 'Authenticates the user and sends them an auth token'
+    desc 'Authenticates the user and sends them an auth token via headers'
     params do
       requires :email, type: String, desc: 'User email'
       requires :password, type: String, desc: 'User Password'
@@ -21,8 +21,8 @@ class V1::SessionsApi < Grape::API
         user.ensure_authentication_token
         user.save
 
-        status 200
-        { auth_token: user.authentication_token }
+        header('Authorization', user.authentication_token)
+        status 204
       end
     end
 
