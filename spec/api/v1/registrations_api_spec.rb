@@ -13,7 +13,7 @@ RSpec.describe V1::RegistrationsApi do
         expect(response.headers['Authorization']).to be_present
       end
 
-      it { expect(status_code).to be 204 }
+      it { expect(status_code).to be 201 }
     end
 
     context 'invalid' do
@@ -25,6 +25,61 @@ RSpec.describe V1::RegistrationsApi do
       end
 
       it { expect(json_response).to include(error: {:email=>["has already been taken"]}) }
+      it { expect(status_code).to be 401 }
+    end
+  end
+
+  describe 'PUT /v1/registrations' do
+    let(:user) { create :user, email: 'user@mail.com', password: 'password' }
+
+    context 'valid' do
+      before(:each) do
+        put '/v1/registrations',
+          params: { username: 'user1', email: 'newuser@mail.com', password: 'newpassword', password_confirmation: 'newpassword' },
+          headers: default_headers({'Authorization': user.authentication_token})
+        user.reload
+      end
+
+      it { expect(user.username).to eq 'user1' }
+      it { expect(user.email).to eq 'newuser@mail.com' }
+      it 'should be valid password when "newpassword"' do
+        expect(user.valid_password?('newpassword')).to be_truthy
+      end
+      it { expect(status_code).to be 204 }
+    end
+
+    context 'invalid' do
+      before(:each) do
+        put '/v1/registrations',
+          params: { username: 'user1', email: 'newuser@mail.com', password: 'newpassword', password_confirmation: 'wrong' },
+          headers: default_headers({'Authorization': user.authentication_token})
+        user.reload
+      end
+
+      it { expect(json_response).to include(error: {:password_confirmation=>["doesn't match Password"]})}
+      it { expect(status_code).to be 422 }
+    end
+  end
+
+  describe 'DELETE /v1/registrations' do
+    context 'valid' do
+      let(:user) { create :user, email: 'user@mail.com', password: 'password' }
+
+      before(:each) do
+        delete '/v1/registrations', headers: default_headers({'Authorization': user.authentication_token})
+      end
+
+      it 'should be destroyed' do
+        expect(User.where(id: user)).to be_empty
+      end
+      it { expect(status_code).to be 204 }
+    end
+
+    context 'invalid' do
+      before(:each) do
+        delete '/v1/registrations', headers: default_headers
+      end
+
       it { expect(status_code).to be 401 }
     end
   end
