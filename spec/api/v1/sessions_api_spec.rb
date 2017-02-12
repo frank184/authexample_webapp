@@ -12,9 +12,11 @@ RSpec.describe V1::SessionsApi do
           params: { email: user.email, password: user.password },
           headers: default_headers
       end
+
       it 'should include an auth token in the Authorization header' do
         expect(response.headers['Authorization']).to be_present
       end
+      it { expect(status_code).to be 204 }
     end
 
     context 'invalid' do
@@ -25,6 +27,7 @@ RSpec.describe V1::SessionsApi do
       end
 
       it { expect(json_response).to include(error: "Invalid Email or Password.") }
+      it { expect(status_code).to be 401 }
     end
   end
 
@@ -35,7 +38,8 @@ RSpec.describe V1::SessionsApi do
           params: {},
           headers: default_headers({'Authorization': user.authentication_token})
       end
-      it { expect(response.status).to be 204 }
+
+      it { expect(status_code).to be 204 }
     end
 
     context 'invalid' do
@@ -46,6 +50,7 @@ RSpec.describe V1::SessionsApi do
       end
 
       it { expect(json_response).to include(error: "Invalid Authentication Token.") }
+      it { expect(status_code).to be 401 }
     end
   end
 end

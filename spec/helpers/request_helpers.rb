@@ -5,6 +5,12 @@ module Request
     end
   end
 
+  module StatusCodeHelpers
+    def status_code
+      response.status
+    end
+  end
+
   module HeadersHelpers
     def default_headers(options = nil)
       defaults = { 'HTTP_HOST': 'api.lvh.me:3000' }
