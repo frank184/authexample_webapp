@@ -13,7 +13,7 @@ module Request
 
   module HeadersHelpers
     def default_headers(options = nil)
-      defaults = { 'HTTP_HOST': 'api.lvh.me:3000' }
+      defaults = { 'HTTP_HOST': 'localhost:3000' }
       defaults.merge!(options) if options
       return defaults
     end

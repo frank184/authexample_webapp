@@ -4,11 +4,11 @@ RSpec.describe V1::SessionsApi do
 
   let(:user) { create :user, email: 'user@mail.com', password: 'password' }
 
-  describe 'POST /v1/sessions' do
+  describe 'POST /api/v1/sessions' do
 
     context 'valid' do
       before(:each) do
-        post '/v1/sessions',
+        post '/api/v1/sessions',
           params: { email: user.email, password: user.password },
           headers: default_headers
       end
@@ -21,7 +21,7 @@ RSpec.describe V1::SessionsApi do
 
     context 'invalid' do
       before(:each) do
-        post '/v1/sessions',
+        post '/api/v1/sessions',
           params: { email: user.email, password: 'invalid' },
           headers: default_headers
       end
@@ -31,10 +31,10 @@ RSpec.describe V1::SessionsApi do
     end
   end
 
-  describe 'DELETE /v1/sessions' do
+  describe 'DELETE /api/v1/sessions' do
     context 'valid' do
       before(:each) do
-        delete '/v1/sessions',
+        delete '/api/v1/sessions',
           params: {},
           headers: default_headers({'Authorization': user.authentication_token})
       end
@@ -44,7 +44,7 @@ RSpec.describe V1::SessionsApi do
 
     context 'invalid' do
       before(:each) do
-        delete '/v1/sessions',
+        delete '/api/v1/sessions',
           params: {},
           headers: default_headers({'Authentication': 'InvalidToken'})
       end

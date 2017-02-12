@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe V1::RegistrationsApi do
-  describe 'POST /v1/registrations' do
+  describe 'POST /api/v1/registrations' do
     context 'valid' do
       before(:each) do
-        post '/v1/registrations',
+        post '/api/v1/registrations',
           params: { email: 'user@mail.com', password: 'password' },
           headers: default_headers
       end
@@ -19,22 +19,23 @@ RSpec.describe V1::RegistrationsApi do
     context 'invalid' do
       before(:each) do
         user = create(:user, email: 'user@mail.com', password: 'password')
-        post '/v1/registrations',
+        post '/api/v1/registrations',
           params: { email: user.email, password: user.password },
           headers: default_headers
       end
 
-      it { expect(json_response).to include(error: {:email=>["has already been taken"]}) }
+      it { expect(json_response[:error]).to include(email: ["has already been taken"]) }
+      it { expect(json_response[:error]).to include(username: ["has already been taken"]) }
       it { expect(status_code).to be 401 }
     end
   end
 
-  describe 'PUT /v1/registrations' do
+  describe 'PUT /api/v1/registrations' do
     let(:user) { create :user, email: 'user@mail.com', password: 'password' }
 
     context 'valid' do
       before(:each) do
-        put '/v1/registrations',
+        put '/api/v1/registrations',
           params: { username: 'user1', email: 'newuser@mail.com', password: 'newpassword', password_confirmation: 'newpassword' },
           headers: default_headers({'Authorization': user.authentication_token})
         user.reload
@@ -50,7 +51,7 @@ RSpec.describe V1::RegistrationsApi do
 
     context 'invalid' do
       before(:each) do
-        put '/v1/registrations',
+        put '/api/v1/registrations',
           params: { username: 'user1', email: 'newuser@mail.com', password: 'newpassword', password_confirmation: 'wrong' },
           headers: default_headers({'Authorization': user.authentication_token})
         user.reload
@@ -61,12 +62,12 @@ RSpec.describe V1::RegistrationsApi do
     end
   end
 
-  describe 'DELETE /v1/registrations' do
+  describe 'DELETE /api/v1/registrations' do
     context 'valid' do
       let(:user) { create :user, email: 'user@mail.com', password: 'password' }
 
       before(:each) do
-        delete '/v1/registrations', headers: default_headers({'Authorization': user.authentication_token})
+        delete '/api/v1/registrations', headers: default_headers({'Authorization': user.authentication_token})
       end
 
       it 'should be destroyed' do
@@ -77,7 +78,7 @@ RSpec.describe V1::RegistrationsApi do
 
     context 'invalid' do
       before(:each) do
-        delete '/v1/registrations', headers: default_headers
+        delete '/api/v1/registrations', headers: default_headers
       end
 
       it { expect(status_code).to be 401 }
