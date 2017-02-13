@@ -9,7 +9,7 @@ RSpec.describe V1::SessionsApi do
     context 'valid' do
       before(:each) do
         post '/api/v1/sessions',
-          params: { email: user.email, password: user.password },
+          params: { email_username: user.email, password: user.password },
           headers: default_headers
       end
 
@@ -22,7 +22,7 @@ RSpec.describe V1::SessionsApi do
     context 'invalid' do
       before(:each) do
         post '/api/v1/sessions',
-          params: { email: user.email, password: 'invalid' },
+          params: { email_username: user.email, password: 'invalid' },
           headers: default_headers
       end
 
